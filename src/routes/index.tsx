@@ -11,16 +11,12 @@ const Create = lazy(() => import('../pages/product/create&update/Create'));
 const Update = lazy(() => import('../pages/product/create&update/Update'));
 
 const RouteProvider: React.FC = () => {
-	const location = useLocation();
-
-	useEffect(() => {
-	  ReactGA.send({ hitType: 'pageview', page: location.pathname });
-	}, [location]);
 	const isLoggedIn: boolean = useAppSelector((state) => state.user.isLoggedIn);
 
 	return (
 		<>
 			<Router>
+				<RouteTracker />
 				<Suspense>
 					<Routes>
 						<Route path='/' element={isLoggedIn ? <Navigate to="/products" /> : <Navigate to="/login" />} />
@@ -40,3 +36,14 @@ const RouteProvider: React.FC = () => {
 };
 
 export default RouteProvider;
+
+
+const RouteTracker = () => {
+	const location = useLocation();
+
+	useEffect(() => {
+		ReactGA.send({ hitType: 'pageview', page: location.pathname });
+	}, [location]);
+
+	return null;  // No UI to render, only handles the effect
+};
