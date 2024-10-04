@@ -84,6 +84,10 @@ const Login: React.FC = () => {
 							<LoadingButton type='submit' fullWidth variant='contained' loading={isLoading} sx={loadingButton}>Login</LoadingButton>
 							{error && <span style={spanError}>{error}</span>}
 						</Box>
+						<Box sx={{ alignItems: 'start' }}>
+							<Typography>username: emilys</Typography>
+							<Typography>password: emilyspass</Typography>
+						</Box>
 					</Card>
 				</Box>
 			</Container>
