@@ -1,8 +1,9 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../redux/store';
 import PrivateRoutes from './protectedRoute';
 import ProductDetailPage from '../pages/product/details/Details';
+import ReactGA from 'react-ga4';
 
 const Products = lazy(() => import('../pages/product/products/Products'));
 const Login = lazy(() => import('../pages/auth/Login'));
@@ -10,6 +11,11 @@ const Create = lazy(() => import('../pages/product/create&update/Create'));
 const Update = lazy(() => import('../pages/product/create&update/Update'));
 
 const RouteProvider: React.FC = () => {
+	const location = useLocation();
+
+	useEffect(() => {
+	  ReactGA.send({ hitType: 'pageview', page: location.pathname });
+	}, [location]);
 	const isLoggedIn: boolean = useAppSelector((state) => state.user.isLoggedIn);
 
 	return (
