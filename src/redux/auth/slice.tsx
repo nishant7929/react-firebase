@@ -2,10 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 import { userLogin } from './thunk';
 import { User } from '../../types/auth';
 
-
-const Token = localStorage.getItem('Token');
+const userId = localStorage.getItem('userId');
 const Theme = localStorage.getItem('theme');
-const initialState: User = { isLoggedIn: Token ? true : false, accessToken: Token, isLoading: false, error: '', theme: Theme ? Theme : 'light' };
+const initialState: User = {
+	isLoggedIn: false,
+	accessToken: '',
+	isLoading: false,
+	error: '',
+	theme: Theme ? Theme : 'light',
+	uid: userId || '',
+};
 
 const UserSlice = createSlice({
 	name: 'user',
@@ -14,12 +20,19 @@ const UserSlice = createSlice({
 		logoutUser(state) {
 			state.isLoggedIn = false;
 			state.accessToken = '';
-			localStorage.removeItem('Token');
+			localStorage.removeItem('userId');
+			state.uid = '';
 		},
 		toggleTheme(state) {
-			localStorage.setItem('theme', state.theme === 'dark' ? 'light' : 'dark');
+			localStorage.setItem(
+				'theme',
+				state.theme === 'dark' ? 'light' : 'dark',
+			);
 			state.theme = state.theme === 'dark' ? 'light' : 'dark';
-		}
+		},
+		handleUserLogin(state, action) {
+			state.uid = action.payload;
+		},
 	},
 	extraReducers(builder) {
 		builder
@@ -43,9 +56,8 @@ const UserSlice = createSlice({
 				state.isLoading = false;
 				state.isLoggedIn = false;
 			});
-	}
+	},
 });
 
-
-export const { logoutUser, toggleTheme } = UserSlice.actions;
+export const { logoutUser, toggleTheme, handleUserLogin } = UserSlice.actions;
 export default UserSlice.reducer;

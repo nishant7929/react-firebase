@@ -38,9 +38,9 @@ const ProductDetailPage: React.FC = () => {
 
 								{/* Product Image */}
 								<Grid item xs={12} md={6}>
-									{typeof product.thumbnail === 'string'
+									{typeof product.image === 'string'
 										&&
-										(<img src={product.thumbnail} alt={product.title} style={{ width: '100%', height: 'auto' }} />)}
+										(<img src={product.image} alt={product.title} style={{ width: '100%', height: 'auto' }} />)}
 								</Grid>
 
 								{/* Product Details */}

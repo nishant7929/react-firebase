@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { logoutUser, toggleTheme } from '../redux/auth/slice';
 import { logOutButtonStyle, navTypographyStyle } from './style';
+import { auth } from '../firebase/firebase';
 
 const NavBar = () => {
 	const dispatch = useAppDispatch();
 	const { theme } = useAppSelector(state => state.user);
 
-	const handleClick = () => {
+	const handleLogout = () => {
+		auth.signOut();
 		dispatch(logoutUser());
 	};
 
@@ -30,7 +32,7 @@ const NavBar = () => {
 				>
 					<Link style={{ textDecoration: 'none', color: 'white', float: 'left' }} to={'/products'}>Dashboard</Link>
 					Theme: <Switch checked={theme === 'dark'} onChange={handleSwitch} />
-					<Button sx={logOutButtonStyle} color='inherit' onClick={handleClick}>logout</Button>
+					<Button sx={logOutButtonStyle} color='inherit' onClick={handleLogout}>logout</Button>
 				</Typography>
 			</AppBar>
 		</>

@@ -30,7 +30,7 @@ const ProductSlice = createSlice({
 			.addCase(filterProduct.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.products = action.payload.products;
-				state.total = action.payload.totalPage;
+				// state.total = action.payload.totalPage;
 				state.error = '';
 			})
 			.addCase(filterProduct.rejected, (state, action) => {
@@ -50,7 +50,9 @@ const ProductSlice = createSlice({
 			})
 			.addCase(getOneProduct.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.product = action.payload;
+				if (action.payload) {
+					state.product = action.payload;
+				}
 				state.error = '';
 			})
 			.addCase(getOneProduct.rejected, (state, action) => {
@@ -68,9 +70,8 @@ const ProductSlice = createSlice({
 				state.isLoading = true;
 				state.error = '';
 			})
-			.addCase(addProduct.fulfilled, (state, action) => {
+			.addCase(addProduct.fulfilled, (state) => {
 				state.isLoading = false;
-				state.product = action.payload;
 				state.error = '';
 			})
 			.addCase(addProduct.rejected, (state, action) => {
@@ -88,9 +89,9 @@ const ProductSlice = createSlice({
 				state.isLoading = true;
 				state.error = '';
 			})
-			.addCase(updateProduct.fulfilled, (state, action) => {
+			.addCase(updateProduct.fulfilled, (state) => {
 				state.isLoading = false;
-				state.product = action.payload;
+				// state.product = action.payload;
 				state.error = '';
 			})
 			.addCase(updateProduct.rejected, (state, action) => {
@@ -108,9 +109,9 @@ const ProductSlice = createSlice({
 				state.isLoading = true;
 				state.error = '';
 			})
-			.addCase(deleteProduct.fulfilled, (state, action) => {
+			.addCase(deleteProduct.fulfilled, (state) => {
 				state.isLoading = false;
-				state.product = action.payload;
+				// state.product = action.payload;
 				state.error = '';
 				alert('Product deleted.');
 			})

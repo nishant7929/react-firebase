@@ -1,49 +1,60 @@
-
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Box, Card, Container, Grid, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppSelector } from '../../redux/store';
 import { Helmet } from 'react-helmet';
-import { userLogin } from '../../redux/auth/thunk';
 import MyTextField from '../../components/MyTextField';
 import { Form } from '../../types/auth';
 import { cardStyle, formBox, loadingButton, mainBox, spanError } from './style';
+import { signIn } from '../../firebase/auth';
 
 const Login: React.FC = () => {
 	const navigate = useNavigate();
-	const dispatch = useAppDispatch();
+	const [loginLoading, setLoginLoading] = useState(false);
 
-	// Store Data
-	const { accessToken, isLoading, error } = useAppSelector(state => state.user);
+	const { uid } = useAppSelector((state) => state.user);
 
-	const [form, setForm] = useState<Form>({ username: '', password: '' });
-	const [errorMessage, setErrorMessage] = useState<Form>({ username: '', password: '' });
+	const [form, setForm] = useState<Form>({ email: '', password: '' });
+	const [errorMessage, setErrorMessage] = useState<Form>({
+		email: '',
+		password: '',
+	});
+	const [error, setError] = useState('');
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+		setLoginLoading(true);
 		e.preventDefault();
 
-		if (!form.username || !form.password) {
-			setErrorMessage({ username: 'Please enter username', password: 'Please enter password' });
+		if (!form.email || !form.password) {
+			setErrorMessage({
+				email: 'Please enter email',
+				password: 'Please enter password',
+			});
+			setLoginLoading(false);
 			return;
 		} else {
-			setErrorMessage({ username: '', password: '' });
+			setErrorMessage({ email: '', password: '' });
 		}
 
-		// Call Login Api
-		dispatch(userLogin(form));
-
+		const response = await signIn(form.email, form.password);
+		if (!response.success) {
+			setError(
+				response.error?.message || 'Sign-in failed. Please try again.',
+			);
+		}
+		setLoginLoading(false);
 	};
 
 	useEffect(() => {
-		if (accessToken) {
+		if (uid) {
 			navigate('/products');
 		}
-	}, [accessToken, error, isLoading, navigate]);
+	}, [uid, error, navigate]);
 
 	return (
 		<>
@@ -51,48 +62,71 @@ const Login: React.FC = () => {
 				<title>login</title>
 			</Helmet>
 
-			<Container component='main' maxWidth='xs'>
-				<Box sx={mainBox} >
-					<Card
-						sx={cardStyle}
-					>
-						<Typography component='h1' variant='h5'>Login</Typography>
-						<Box component='form' onSubmit={handleSubmit} sx={formBox}>
+			<Container component="main" maxWidth="xs">
+				<Box sx={mainBox}>
+					<Card sx={cardStyle}>
+						<Typography component="h1" variant="h5">
+							Login
+						</Typography>
+						<Box
+							component="form"
+							onSubmit={handleSubmit}
+							sx={formBox}
+						>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
 									<MyTextField
-										label='Username'
-										name='username'
-										type='text'
-										error={!form.username && errorMessage.username !== ''}
-										helperText={!form.username && errorMessage.username}
-										value={form.username}
-										onChange={handleChange} />
+										label="email"
+										name="email"
+										type="text"
+										error={
+											!form.email &&
+											errorMessage.email !== ''
+										}
+										helperText={
+											!form.email && errorMessage.email
+										}
+										value={form.email}
+										onChange={handleChange}
+									/>
 								</Grid>
 								<Grid item xs={12}>
 									<MyTextField
-										name='password'
+										name="password"
 										value={form.password}
 										onChange={handleChange}
-										label='Password'
-										type='password'
-										error={!form.password && errorMessage.password !== ''}
-										helperText={!form.password && errorMessage.password}
+										label="Password"
+										type="password"
+										error={
+											!form.password &&
+											errorMessage.password !== ''
+										}
+										helperText={
+											!form.password &&
+											errorMessage.password
+										}
 									/>
 								</Grid>
 							</Grid>
-							<LoadingButton type='submit' fullWidth variant='contained' loading={isLoading} sx={loadingButton}>Login</LoadingButton>
+							<LoadingButton
+								type="submit"
+								fullWidth
+								variant="contained"
+								loading={loginLoading}
+								sx={loadingButton}
+							>
+								Login
+							</LoadingButton>
 							{error && <span style={spanError}>{error}</span>}
 						</Box>
 						<Box sx={{ alignItems: 'start' }}>
-							<Typography>username: emilys</Typography>
-							<Typography>password: emilyspass</Typography>
+							Don&apos;t have account?{' '}
+							<Link to={'/signup'}>sign up</Link>
 						</Box>
 					</Card>
 				</Box>
 			</Container>
 		</>
-
 	);
 };
 

@@ -3,9 +3,9 @@ import {  Outlet, Navigate } from 'react-router-dom';
 import { useAppSelector } from '../redux/store';
 
 const PrivateRoutes: FC = () => {
-	const Token = useAppSelector((state) => state.user.accessToken);
+	const { uid } = useAppSelector((state) => state.user);
 
-	return Token
+	return uid
 	  ? <Outlet />
 	  : <Navigate to="/login" />;
 };

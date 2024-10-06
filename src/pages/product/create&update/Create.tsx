@@ -22,7 +22,7 @@ const Create: React.FC = () => {
 		stock: '',
 		brand: '',
 		category: '',
-		thumbnail: null,
+		image: null,
 	});
 	const [errorMessage, setErrorMessage] = useState({
 		title: '',
@@ -33,7 +33,7 @@ const Create: React.FC = () => {
 		stock: '',
 		brand: '',
 		category: '',
-		thumbnail: '',
+		image: '',
 	});
 
 	const navigate = useNavigate();
@@ -49,14 +49,14 @@ const Create: React.FC = () => {
 		if (files && files[0]) {
 			setImage(URL.createObjectURL(files[0]));
 			const thumbnail = files[0];
-			setFormData({ ...formData, thumbnail });
+			setFormData({ ...formData, image: thumbnail });
 		}
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (!formData.title || !formData.description || !formData.price || !formData.discountPercentage || !formData.rating || !formData.stock || !formData.brand || !formData.category || !formData.thumbnail) {
+		if (!formData.title || !formData.description || !formData.price || !formData.discountPercentage || !formData.rating || !formData.stock || !formData.brand || !formData.category) {
 			setErrorMessage({
 				title: 'Title is required',
 				description: 'Description is required',
@@ -66,7 +66,7 @@ const Create: React.FC = () => {
 				stock: 'Stock is required',
 				brand: 'Brand is required',
 				category: 'Category is required',
-				thumbnail: 'Thumbnail is required',
+				image: 'Thumbnail is required',
 			});
 			return;
 		} else {
@@ -79,17 +79,14 @@ const Create: React.FC = () => {
 				stock: '',
 				brand: '',
 				category: '',
-				thumbnail: '',
+				image: '',
 			});
 		}
 
-		dispatch(addProduct(formData))
-			.unwrap()
-			.then((res) => {
-				if (res.id) {
-					navigate('/products');
-				}
-			});
+		const result = await dispatch(addProduct(formData));
+		if (result.meta.requestStatus === 'fulfilled'){
+			navigate('/products');
+		}
 	};
 	return (
 		<div>
@@ -201,7 +198,7 @@ const Create: React.FC = () => {
 										Upload Thumbnail
 									</Button>
 								</label>
-								{!formData.thumbnail && <span style={thumbnailErrorStyle}>{errorMessage.thumbnail}</span>}
+								{!formData.image && <span style={thumbnailErrorStyle}>{errorMessage.image}</span>}
 								{image && <img style={imagePreviewStyle} alt="preview image" src={image} />}
 							</Grid>
 

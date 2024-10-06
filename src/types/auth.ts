@@ -4,9 +4,10 @@ export interface User {
     isLoading: boolean;
     error: string | null | undefined;
 	theme: string;
+	uid: string;
 }
 
 export interface Form {
-    username: string;
+    email: string;
     password: string;
 }

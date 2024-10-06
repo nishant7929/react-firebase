@@ -39,12 +39,13 @@ const Products: React.FC = () => {
 
 	const handleDelete = (id: number) => {
 		dispatch(deleteProduct(id));
+		dispatch(filterProduct({ limit: pagination.limit, skip: pagination.skip, searchInput: search }));
 	};
 
 	const columns: GridColDef[] = [
-		{ field: 'id', headerName: 'ID', width: 70 },
+		// { field: 'id', headerName: 'ID', width: 70 },
 		{
-			field: 'thumbnail',
+			field: 'image',
 			headerName: 'Image',
 			width: 200,
 			renderCell: (params) => <img src={params.value} alt={params.value} style={{ width: '150px', height: '100px' }} />

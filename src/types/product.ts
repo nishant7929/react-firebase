@@ -8,14 +8,14 @@ export interface Product {
 }
 
 export interface ProductData {
-	id?: string,
-	title: string,
-	description: string,
-	price: string,
-	discountPercentage: string,
-	rating: string,
-	stock: string,
-	brand: string,
-	category: string,
-	thumbnail: File | null | string
+	id?: string;
+	title: string;
+	description: string;
+	price: string;
+	discountPercentage: string;
+	rating: string;
+	stock: string;
+	brand: string;
+	category: string;
+	image?: File | null | string;
 }
