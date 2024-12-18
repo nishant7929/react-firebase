@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db } from './firebase';
+import imageCompression from 'browser-image-compression';
 
 const generateRandomID = () => {
 	const characters =
@@ -26,9 +27,15 @@ const generateRandomID = () => {
 export const uploadImage = async(imageFile: File, id: string) => {
 	const storage = getStorage();
 	let imageUrl = '';
+	const options = {
+		maxSizeMB: 0.05, // Maximum size in MB (50kb = 0.05MB)
+		maxWidthOrHeight: 1024, // Max dimensions (optional, can be adjusted as needed)
+		useWebWorker: true, // Use a web worker for better performance
+	  };
+	  const compressedFile = await imageCompression(imageFile, options);
 	if (imageFile) {
 		const storageRef = ref(storage, `images/${id}`);
-		const snapshot = await uploadBytes(storageRef, imageFile);
+		const snapshot = await uploadBytes(storageRef, compressedFile);
 		imageUrl = await getDownloadURL(snapshot.ref);
 	}
 	return imageUrl;
